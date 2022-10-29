@@ -16,7 +16,7 @@ dependencies:
   easy_logger: ^0.0.2
   printing: ^5.6.6
   win32: ^3.0.1
-  ffi: ^2.0.1
+  ffi: ^1.2.0
   flutter_usb_printer:  ^0.1.0
 
 dev_dependencies:
