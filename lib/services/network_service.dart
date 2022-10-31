@@ -6,9 +6,9 @@ import '../pos_print_manager.dart';
 
 class NetworkService {}
 
-Future<List<String>> findNetworkPrinter({int port: 9100}) async {
-  final _info = NetworkInfo();
-  String? ip = await (_info.getWifiIP());
+Future<List<String>> findNetworkPrinter({int port = 9100}) async {
+  final info = NetworkInfo();
+  String? ip = await (info.getWifiIP());
   if (ip?.isEmpty == true) {
     ip = (await getAddresses()).first;
   }

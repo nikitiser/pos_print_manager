@@ -12,6 +12,7 @@ import 'printer_manager.dart';
 
 /// Bluetooth Printer
 class BluetoothPrinterManager extends PrinterManager {
+  @override
   Generator? generator;
   themal.BlueThermalPrinter bluetooth = themal.BlueThermalPrinter.instance;
   // fblue.FlutterBlue flutterBlue = fblue.FlutterBlue.instance;
@@ -22,7 +23,7 @@ class BluetoothPrinterManager extends PrinterManager {
     PaperSize paperSize,
     CapabilityProfile profile, {
     int spaceBetweenRows = 5,
-    int port: 9100,
+    int port = 9100,
   }) {
     super.printer = printer;
     super.address = printer.address;
@@ -35,6 +36,7 @@ class BluetoothPrinterManager extends PrinterManager {
   }
 
   /// [connect] let you connect to a bluetooth printer
+  @override
   Future<ConnectionResponse> connect(
       {Duration? timeout: const Duration(seconds: 5)}) async {
     try {
@@ -53,12 +55,12 @@ class BluetoothPrinterManager extends PrinterManager {
         await bluetooth.connect(device);
       }
 
-      this.isConnected = true;
-      this.printer.connected = true;
+      isConnected = true;
+      printer.connected = true;
       return Future<ConnectionResponse>.value(ConnectionResponse.success);
     } catch (e) {
-      this.isConnected = false;
-      this.printer.connected = false;
+      isConnected = false;
+      printer.connected = false;
       return Future<ConnectionResponse>.value(ConnectionResponse.timeout);
     }
   }
@@ -81,7 +83,7 @@ class BluetoothPrinterManager extends PrinterManager {
   /// [writeBytes] let you write raw list int data into socket
   @override
   Future<ConnectionResponse> writeBytes(List<int> data,
-      {bool isDisconnect: true}) async {
+      {bool isDisconnect = true}) async {
     try {
       if (!isConnected) {
         await connect();
@@ -114,10 +116,11 @@ class BluetoothPrinterManager extends PrinterManager {
   }
 
   /// [timeout]: milliseconds to wait after closing the socket
+  @override
   Future<ConnectionResponse> disconnect({Duration? timeout}) async {
     if (Platform.isAndroid || Platform.isIOS) {
       await bluetooth.disconnect();
-      this.isConnected = false;
+      isConnected = false;
     }
     //  else if (Platform.isIOS) {
     // await fbdevice.disconnect();

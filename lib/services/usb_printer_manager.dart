@@ -35,7 +35,7 @@ class USBPrinterManager extends PrinterManager {
     PaperSize paperSize,
     CapabilityProfile profile, {
     int spaceBetweenRows = 5,
-    int port: 9100,
+    int port = 9100,
   }) {
     super.printer = printer;
     super.address = printer.address;
@@ -52,7 +52,7 @@ class USBPrinterManager extends PrinterManager {
 
   @override
   Future<ConnectionResponse> connect(
-      {Duration? timeout: const Duration(seconds: 5)}) async {
+      {Duration? timeout = const Duration(seconds: 5)}) async {
     if (Platform.isWindows) {
       try {
         docInfo = calloc<DOC_INFO_1>()
@@ -64,32 +64,32 @@ class USBPrinterManager extends PrinterManager {
         final phPrinter = calloc<HANDLE>();
         if (OpenPrinter(szPrinterName, phPrinter, nullptr) == FALSE) {
           PosPrinterManager.logger.error("can not open");
-          this.isConnected = false;
-          this.printer.connected = false;
+          isConnected = false;
+          printer.connected = false;
           return Future<ConnectionResponse>.value(
               ConnectionResponse.printerNotConnected);
         } else {
           PosPrinterManager.logger.info("szPrinterName: $szPrinterName");
-          this.hPrinter = phPrinter.value;
-          this.isConnected = true;
-          this.printer.connected = true;
+          hPrinter = phPrinter.value;
+          isConnected = true;
+          printer.connected = true;
           return Future<ConnectionResponse>.value(ConnectionResponse.success);
         }
       } catch (e) {
-        this.isConnected = false;
-        this.printer.connected = false;
+        isConnected = false;
+        printer.connected = false;
         return Future<ConnectionResponse>.value(ConnectionResponse.timeout);
       }
     } else if (Platform.isAndroid) {
       var usbDevice = await usbPrinter.connect(vendorId!, productId!);
       if (usbDevice != null) {
         print("vendorId $vendorId, productId $productId ");
-        this.isConnected = true;
-        this.printer.connected = true;
+        isConnected = true;
+        printer.connected = true;
         return Future<ConnectionResponse>.value(ConnectionResponse.success);
       } else {
-        this.isConnected = false;
-        this.printer.connected = false;
+        isConnected = false;
+        printer.connected = false;
         return Future<ConnectionResponse>.value(ConnectionResponse.timeout);
       }
     } else {
@@ -115,8 +115,8 @@ class USBPrinterManager extends PrinterManager {
       free(docInfo!);
       free(szPrinterName);
 
-      this.isConnected = false;
-      this.printer.connected = false;
+      isConnected = false;
+      printer.connected = false;
       if (timeout != null) {
         await Future.delayed(timeout, () => null);
       }
@@ -124,8 +124,8 @@ class USBPrinterManager extends PrinterManager {
       return ConnectionResponse.success;
     } else if (Platform.isAndroid) {
       await usbPrinter.close();
-      this.isConnected = false;
-      this.printer.connected = false;
+      isConnected = false;
+      printer.connected = false;
       if (timeout != null) {
         await Future.delayed(timeout, () => null);
       }
@@ -139,7 +139,7 @@ class USBPrinterManager extends PrinterManager {
       {bool isDisconnect = true}) async {
     if (Platform.isWindows) {
       try {
-        if (!this.isConnected) {
+        if (!isConnected) {
           await connect();
           PosPrinterManager.logger.info("connect()");
         }
@@ -199,7 +199,7 @@ class USBPrinterManager extends PrinterManager {
         return ConnectionResponse.unknown;
       }
     } else if (Platform.isAndroid) {
-      if (!this.isConnected) {
+      if (!isConnected) {
         await connect();
         PosPrinterManager.logger.info("connect()");
       }
@@ -217,8 +217,8 @@ class USBPrinterManager extends PrinterManager {
       if (isDisconnect) {
         try {
           await usbPrinter.close();
-          this.isConnected = false;
-          this.printer.connected = false;
+          isConnected = false;
+          printer.connected = false;
         } catch (e) {
           PosPrinterManager.logger.error("Error : $e");
           return ConnectionResponse.unknown;

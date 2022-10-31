@@ -9,6 +9,7 @@ import 'printer_manager.dart';
 
 /// Network Printer
 class NetworkPrinterManager extends PrinterManager {
+  @override
   Generator? generator;
   Socket? socket;
 
@@ -30,16 +31,17 @@ class NetworkPrinterManager extends PrinterManager {
   }
 
   /// [connect] let you connect to a network printer
+  @override
   Future<ConnectionResponse> connect(
-      {Duration? timeout: const Duration(seconds: 5)}) async {
+      {Duration? timeout = const Duration(seconds: 5)}) async {
     try {
-      this.socket = await Socket.connect(address, port, timeout: timeout);
-      this.isConnected = true;
-      this.printer.connected = true;
+      socket = await Socket.connect(address, port, timeout: timeout);
+      isConnected = true;
+      printer.connected = true;
       return Future<ConnectionResponse>.value(ConnectionResponse.success);
     } catch (e) {
-      this.isConnected = false;
-      this.printer.connected = false;
+      isConnected = false;
+      printer.connected = false;
       return Future<ConnectionResponse>.value(ConnectionResponse.timeout);
     }
   }
@@ -67,8 +69,8 @@ class NetworkPrinterManager extends PrinterManager {
       if (!isConnected) {
         await connect();
       }
-      print(this.socket);
-      this.socket?.add(data);
+      print(socket);
+      socket?.add(data);
       if (isDisconnect) {
         await disconnect();
       }
@@ -80,10 +82,11 @@ class NetworkPrinterManager extends PrinterManager {
   }
 
   /// [timeout]: milliseconds to wait after closing the socket
+  @override
   Future<ConnectionResponse> disconnect({Duration? timeout}) async {
     await socket?.flush();
     await socket?.close();
-    this.isConnected = false;
+    isConnected = false;
     if (timeout != null) {
       await Future.delayed(timeout, () => null);
     }
