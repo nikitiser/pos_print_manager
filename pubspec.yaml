@@ -1,11 +1,11 @@
 name: pos_print_manager
 description: A new Flutter package project.
-version: 0.0.2
+version: 0.0.3
 homepage: 'https://github.com/nikitiser/pos_print_manager'
 
 environment:
   sdk: '>=2.18.2 <3.0.0'
-  flutter: ">=1.17.0"
+  flutter: ">=3.3.0"
 
 dependencies:
   flutter:
@@ -14,7 +14,7 @@ dependencies:
   blue_thermal_printer: ^1.1.8          
   network_info_plus: ^3.0.1
   easy_logger: ^0.0.2
-  printing: ^5.6.6
+  printing: ^5.9.3
   win32: ^3.0.1
   ffi: ^2.0.1
   flutter_usb_printer:  ^0.1.0
